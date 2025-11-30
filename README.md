@@ -27,7 +27,7 @@ new CreatureChatTx(
 );
 ```
 
-###Dialogue with Screen Prompts
+### Dialogue with Screen Prompts
 
 ```csharp
 new CreatureChatTx(room, 0, player, "I'm a slugpup,meow!",
@@ -36,7 +36,7 @@ new CreatureChatTx(room, 0, player, "I'm a slugpup,meow!",
     textPromptTime: 320);                // Prompt display duration
 ```
 
-###Interruptible Dialogue
+### Interruptible Dialogue
 
 ```csharp
 new CreatureChatTx(room, 0, player, "Dialogue content",
