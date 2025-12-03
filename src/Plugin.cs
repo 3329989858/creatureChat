@@ -1,6 +1,7 @@
 ﻿
 using BepInEx;
 using RWCustom;
+using System;
 
 
 namespace CreatureChat
@@ -20,11 +21,22 @@ namespace CreatureChat
         {
             On.RainWorld.OnModsInit += Extras.WrapInit(LoadResources);
             // Put your custom hooks here!
-            //On.Player.Update += Player_Update;
+            On.Player.Update += Player_Update;
             On.HUD.HUD.ctor += HUD_ctor;
             On.HUD.HUD.Update += HUD_Update;
             On.HUD.HUD.Draw += HUD_Draw;
         }
+
+        private void Player_Update(On.Player.orig_Update orig, Player self, bool eu)
+        {
+            bool s = self.input[0].spec;
+            orig.Invoke(self, eu);
+            if (!s && self.input[0].spec)
+            {
+                //new CreatureChatTx(self.room, 0, self, "这是测试对话。<LINE>This is a test.<LINE><color#ff0000ff>Colorful!</colorend><LINE><shake1>Shaky</shakeend><wave3>Wawy</waveend>");
+            }
+        }
+
         private void HUD_ctor(On.HUD.HUD.orig_ctor orig, HUD.HUD self, FContainer[] fContainers, RainWorld rainWorld, HUD.IOwnAHUD owner)
         {
             orig.Invoke(self, fContainers, rainWorld, owner);

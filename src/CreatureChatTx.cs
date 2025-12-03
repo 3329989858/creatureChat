@@ -121,7 +121,10 @@ namespace CreatureChat
 
         public int textPromptTime;
 
-        public CreatureChatTx(Room room, int preWaitCounter,PhysicalObject chatter,bool canInterruptedByStun = false, bool canInterruptedByDead = false, string textprompt = "", int textPromptWait = 0, int textPromptTime = 320)
+        public string talkText;
+
+
+        public CreatureChatTx(Room room, int preWaitCounter, Player chatter, string talkText, bool canInterruptedByStun = false, bool canInterruptedByDead = false, string textprompt = "", int textPromptWait = 0, int textPromptTime = 320)
         {
             base.room = room;
             this.preWaitCounter = preWaitCounter;
@@ -131,6 +134,8 @@ namespace CreatureChat
             textPrompt = textprompt;
             this.textPromptWait = textPromptWait;
             this.textPromptTime = textPromptTime;
+            this.talkText = talkText;
+
             extraLingerFactor = ((room.game.rainWorld.inGameTranslator.currentLanguage == InGameTranslator.LanguageID.Chinese) ? 1 : 0);
             if (textPrompt == string.Empty)
             {
@@ -194,6 +199,19 @@ namespace CreatureChat
 
         public virtual void AddTextEvents(CreatureDialogBox dialogBox)
         {
+            string raw = Translate(talkText);
+            if (string.IsNullOrEmpty(raw)) return;
+
+            string[] segments = raw.Split(new[] { "<NEXT>" }, StringSplitOptions.RemoveEmptyEntries);
+
+            for (int i = 0; i < segments.Length; i++)
+            {
+                string seg = segments[i].Trim();
+                if (seg.Length == 0) continue;
+
+                // 每段都是一个独立事件
+                events.Add(new CreatureChatTx.TextEvent(this, seg, dialogBox, 0, 60));
+            }
             inited = true;
         }
 
